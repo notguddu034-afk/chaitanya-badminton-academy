@@ -1,0 +1,2043 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#061437" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Owner Dashboard | Chaitanya Badminton Academy</title>
+
+  <style>
+    :root{
+      --navy:#061437;
+      --navy-2:#0a2257;
+      --blue:#0d5ad7;
+      --red:#d20b18;
+      --red-2:#ff3040;
+      --gold:#ffc83d;
+      --green:#1caf52;
+      --orange:#f59e0b;
+      --ink:#11182f;
+      --muted:#66708a;
+      --paper:#ffffff;
+      --soft:#f4f7ff;
+      --line:rgba(11,25,61,.12);
+      --shadow:0 28px 70px rgba(6,20,55,.18);
+      --radius:28px;
+      --max:1380px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;
+      font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% -4%,rgba(13,90,215,.24),transparent 28%),
+        radial-gradient(circle at 92% 8%,rgba(210,11,24,.16),transparent 25%),
+        linear-gradient(180deg,#f8fbff 0%,#eef3ff 48%,#fff 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-4;
+      opacity:.44;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(6,20,55,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(6,20,55,.045) 1px,transparent 1px);
+      background-size:54px 54px;
+      mask-image:linear-gradient(to bottom,#000,transparent 80%);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    img{max-width:100%;display:block}
+    .wrap{width:min(var(--max),calc(100% - 34px));margin-inline:auto}
+    .hidden{display:none!important}
+
+    .progress{
+      position:fixed;
+      left:0;
+      top:0;
+      z-index:300;
+      width:0;
+      height:4px;
+      background:linear-gradient(90deg,var(--red),var(--blue),var(--gold));
+    }
+
+    .top-alert{
+      position:relative;
+      z-index:3;
+      padding:10px 14px;
+      color:white;
+      text-align:center;
+      font-size:.78rem;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      background:linear-gradient(90deg,var(--navy),var(--red),var(--navy));
+    }
+    .top-alert span{color:var(--gold)}
+
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:100;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.84);
+      backdrop-filter:blur(18px);
+      box-shadow:0 12px 34px rgba(6,20,55,.08);
+    }
+    .nav-inner{
+      min-height:82px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:max-content;
+    }
+    .brand-logo{
+      width:62px;
+      height:62px;
+      padding:4px;
+      object-fit:contain;
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 10px 28px rgba(6,20,55,.14);
+    }
+    .brand-text b{
+      display:block;
+      color:var(--red);
+      font-size:1.05rem;
+      line-height:1;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .brand-text span{
+      display:block;
+      margin-top:3px;
+      color:var(--navy);
+      font-size:.82rem;
+      font-weight:900;
+      letter-spacing:.07em;
+    }
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+    .nav-link,.logout-button{
+      min-height:45px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 16px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--navy);
+      background:#fff;
+      font-size:.86rem;
+      font-weight:950;
+      transition:.24s ease;
+    }
+    .nav-link:hover{
+      transform:translateY(-2px);
+      color:#fff;
+      border-color:var(--blue);
+      background:var(--blue);
+    }
+    .logout-button{
+      color:#fff;
+      border:0;
+      background:linear-gradient(135deg,var(--red),var(--red-2));
+      box-shadow:0 10px 24px rgba(210,11,24,.2);
+    }
+
+    .message{
+      display:none;
+      margin-bottom:18px;
+      padding:15px 17px;
+      color:#8f0710;
+      border:1px solid rgba(210,11,24,.27);
+      border-radius:18px;
+      background:#fff0f2;
+      line-height:1.55;
+      font-weight:720;
+    }
+    .message.visible{display:block}
+    .message.success{
+      color:#0d7137;
+      border-color:rgba(28,175,82,.30);
+      background:#effcf4;
+    }
+    .message.warning{
+      color:#675015;
+      border-color:#f0d58c;
+      background:#fff7dd;
+    }
+
+    /* Login */
+    .login-section{
+      position:relative;
+      overflow:hidden;
+      min-height:calc(100vh - 120px);
+      padding:66px 0 90px;
+      background:linear-gradient(135deg,#fff 0%,#f4f7ff 58%,#eef3ff 100%);
+    }
+    .login-section::after{
+      content:"";
+      position:absolute;
+      right:-15%;
+      top:2%;
+      width:650px;
+      height:650px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(13,90,215,.20),transparent 62%);
+      animation:heroGlow 5.5s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes heroGlow{
+      0%,100%{transform:scale(1);opacity:.68}
+      50%{transform:scale(1.08);opacity:.95}
+    }
+    .login-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:38px;
+      align-items:center;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      padding:10px 15px;
+      color:var(--navy);
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 10px 28px rgba(6,20,55,.08);
+      font-weight:950;
+    }
+    .badge i{font-style:normal;color:var(--red)}
+    .login-copy h1{
+      max-width:760px;
+      margin:20px 0 18px;
+      color:var(--navy);
+      font-size:clamp(3.2rem,7.4vw,7.3rem);
+      line-height:.86;
+      letter-spacing:-.075em;
+      text-transform:uppercase;
+      font-weight:1000;
+    }
+    .red-word{
+      color:var(--red);
+      text-shadow:0 7px 0 rgba(210,11,24,.08);
+    }
+    .login-copy > p{
+      max-width:690px;
+      color:#4f5d7c;
+      font-size:1.08rem;
+      line-height:1.8;
+    }
+    .login-points{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:29px;
+    }
+    .login-point{
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:#fff;
+      box-shadow:0 14px 38px rgba(6,20,55,.08);
+    }
+    .login-point b{
+      display:block;
+      color:var(--red);
+      font-size:1.35rem;
+      line-height:1;
+      font-weight:1000;
+    }
+    .login-point span{
+      display:block;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.84rem;
+      font-weight:800;
+      line-height:1.45;
+    }
+
+    .login-card{
+      position:relative;
+      overflow:hidden;
+      padding:34px;
+      border:1px solid rgba(6,20,55,.12);
+      border-radius:36px;
+      background:#fff;
+      box-shadow:var(--shadow);
+      transform:rotate(1deg);
+      transition:.4s ease;
+    }
+    .login-card:hover{transform:rotate(0deg) translateY(-6px)}
+    .login-card::before{
+      content:"";
+      position:absolute;
+      top:-80px;
+      right:-70px;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(13,90,215,.16),transparent 68%);
+    }
+    .lock-icon{
+      width:64px;
+      height:64px;
+      display:grid;
+      place-items:center;
+      margin-bottom:20px;
+      color:#fff;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      box-shadow:0 14px 32px rgba(13,90,215,.23);
+      font-size:1.65rem;
+    }
+    .login-card small{
+      display:block;
+      color:var(--red);
+      font-size:.74rem;
+      font-weight:1000;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+    }
+    .login-card h2{
+      margin-top:7px;
+      color:var(--navy);
+      font-size:2.1rem;
+      letter-spacing:-.05em;
+      font-weight:1000;
+    }
+    .login-card > p{
+      margin:10px 0 23px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .password-label{
+      display:grid;
+      gap:8px;
+      color:#33415f;
+      font-size:.88rem;
+      font-weight:900;
+    }
+    .password-wrap{position:relative}
+    .password-wrap input{
+      width:100%;
+      min-height:56px;
+      padding:0 54px 0 15px;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:18px;
+      outline:none;
+      background:#f7f9ff;
+    }
+    .password-wrap input:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(13,90,215,.10);
+      background:#fff;
+    }
+    .show-password{
+      position:absolute;
+      top:50%;
+      right:10px;
+      width:38px;
+      height:38px;
+      transform:translateY(-50%);
+      color:var(--blue);
+      border:0;
+      border-radius:12px;
+      background:#eaf0ff;
+      font-weight:1000;
+    }
+    .login-button{
+      width:100%;
+      min-height:57px;
+      margin-top:17px;
+      color:#fff;
+      border:0;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--red),var(--red-2));
+      box-shadow:0 17px 38px rgba(210,11,24,.23);
+      font-weight:1000;
+      transition:.26s ease;
+    }
+    .login-button:hover{
+      transform:translateY(-3px);
+      box-shadow:0 22px 46px rgba(210,11,24,.30);
+    }
+    .login-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .login-note{
+      margin-top:17px;
+      padding:14px;
+      color:#675015;
+      border:1px solid #f0d58c;
+      border-radius:17px;
+      background:#fff7dd;
+      font-size:.78rem;
+      line-height:1.55;
+      font-weight:700;
+    }
+
+    /* Dashboard */
+    .dashboard-section{padding:48px 0 90px}
+    .dashboard-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:25px;
+      margin-bottom:26px;
+    }
+    .kicker{
+      margin-bottom:8px;
+      color:var(--red);
+      font-size:.8rem;
+      font-weight:1000;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+    .dashboard-head h1{
+      color:var(--navy);
+      font-size:clamp(2.35rem,4.8vw,5rem);
+      line-height:.94;
+      letter-spacing:-.06em;
+      font-weight:1000;
+    }
+    .dashboard-head p{
+      max-width:520px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+    .live-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:11px;
+      padding:8px 12px;
+      color:#0d7137;
+      border:1px solid rgba(28,175,82,.24);
+      border-radius:999px;
+      background:#effcf4;
+      font-size:.77rem;
+      font-weight:950;
+    }
+    .live-pill::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 5px rgba(28,175,82,.10);
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:15px;
+      margin-bottom:20px;
+    }
+    .stat-card{
+      position:relative;
+      overflow:hidden;
+      padding:21px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 15px 42px rgba(6,20,55,.08);
+      transition:.26s ease;
+    }
+    .stat-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 23px 54px rgba(6,20,55,.13);
+    }
+    .stat-card::after{
+      content:"";
+      position:absolute;
+      right:-26px;
+      bottom:-28px;
+      width:100px;
+      height:100px;
+      border-radius:50%;
+      opacity:.12;
+      background:currentColor;
+    }
+    .stat-card span{
+      display:block;
+      color:var(--muted);
+      font-size:.76rem;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .stat-card strong{
+      display:block;
+      margin-top:9px;
+      color:var(--navy);
+      font-size:2.15rem;
+      line-height:1;
+      font-weight:1000;
+    }
+    .stat-card small{
+      display:block;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.78rem;
+    }
+    .stat-pending{color:var(--orange)}
+    .stat-confirmed{color:var(--green)}
+    .stat-rejected{color:var(--red)}
+    .stat-revenue{color:var(--blue)}
+
+    .toolbar-card{
+      margin-bottom:20px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 15px 42px rgba(6,20,55,.08);
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:minmax(210px,1.5fr) repeat(3,minmax(145px,.65fr)) auto;
+      gap:11px;
+      align-items:end;
+    }
+    .toolbar label{
+      display:grid;
+      gap:7px;
+      color:#33415f;
+      font-size:.75rem;
+      font-weight:950;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .toolbar input,.toolbar select{
+      width:100%;
+      min-height:47px;
+      padding:0 13px;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:15px;
+      outline:none;
+      background:#f7f9ff;
+    }
+    .toolbar input:focus,.toolbar select:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(13,90,215,.10);
+      background:#fff;
+    }
+    .toolbar-buttons{
+      display:flex;
+      gap:8px;
+    }
+    .toolbar-button{
+      min-height:47px;
+      padding:0 15px;
+      color:var(--navy);
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:#eef3ff;
+      font-weight:950;
+      white-space:nowrap;
+      transition:.22s ease;
+    }
+    .toolbar-button:hover{
+      color:#fff;
+      border-color:var(--blue);
+      background:var(--blue);
+    }
+
+    .table-card{
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:#fff;
+      box-shadow:0 18px 52px rgba(6,20,55,.10);
+    }
+    .table-head{
+      padding:20px 22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+    }
+    .table-head h2{
+      font-size:1.45rem;
+      letter-spacing:-.035em;
+    }
+    .table-head span{
+      color:#d9e5fb;
+      font-size:.85rem;
+      font-weight:750;
+    }
+    .table-wrap{overflow-x:auto}
+    table{
+      width:100%;
+      min-width:1180px;
+      border-collapse:collapse;
+    }
+    th,td{
+      padding:16px;
+      text-align:left;
+      vertical-align:top;
+      border-bottom:1px solid var(--line);
+    }
+    th{
+      color:#52617e;
+      background:#f7f9ff;
+      font-size:.72rem;
+      font-weight:1000;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    tbody tr{transition:.2s ease}
+    tbody tr:hover{background:#fbfcff}
+    tbody tr:last-child td{border-bottom:0}
+    .customer-name{
+      display:block;
+      color:var(--navy);
+      font-size:.97rem;
+      font-weight:1000;
+    }
+    .subtext{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.78rem;
+      line-height:1.45;
+    }
+    .reference{
+      display:inline-block;
+      margin-top:7px;
+      padding:5px 8px;
+      color:var(--red);
+      border-radius:9px;
+      background:#fff0f2;
+      font-size:.7rem;
+      font-weight:1000;
+    }
+    .status-badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.7rem;
+      font-weight:1000;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .status-pending{color:#805500;background:#fff5d8}
+    .status-confirmed{color:#0d7137;background:#eafaf1}
+    .status-rejected,.status-cancelled{color:#920b15;background:#fff0f2}
+    .payment-badge{
+      display:inline-flex;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:.74rem;
+      font-weight:850;
+    }
+    .action-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      min-width:250px;
+    }
+    .action-button{
+      min-height:36px;
+      padding:0 11px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:#fff;
+      color:var(--navy);
+      font-size:.74rem;
+      font-weight:1000;
+      transition:.2s ease;
+    }
+    .action-button:hover{transform:translateY(-2px)}
+    .action-confirm{
+      color:#fff;
+      border-color:var(--green);
+      background:var(--green);
+    }
+    .action-reject,.action-cancel{
+      color:#fff;
+      border-color:var(--red);
+      background:var(--red);
+    }
+    .action-call{
+      color:#fff;
+      border-color:var(--blue);
+      background:var(--blue);
+    }
+    .action-whatsapp{
+      color:#fff;
+      border-color:#159447;
+      background:#159447;
+    }
+    .empty-state{
+      padding:58px 20px;
+      text-align:center;
+    }
+    .empty-state-icon{
+      width:70px;
+      height:70px;
+      display:grid;
+      place-items:center;
+      margin:0 auto 17px;
+      color:var(--blue);
+      border-radius:22px;
+      background:#eaf0ff;
+      font-size:1.8rem;
+    }
+    .empty-state h3{
+      color:var(--navy);
+      font-size:1.4rem;
+    }
+    .empty-state p{
+      max-width:460px;
+      margin:8px auto 0;
+      color:var(--muted);
+      line-height:1.65;
+    }
+
+    .footer{
+      padding:31px 0;
+      color:#fff;
+      background:var(--navy);
+    }
+    .footer-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .footer-brand img{
+      width:54px;
+      height:54px;
+      padding:4px;
+      border-radius:16px;
+      background:#fff;
+    }
+    .footer p{color:#cdd9f2;line-height:1.5}
+
+    /* Modals */
+    dialog{
+      width:min(570px,calc(100% - 30px));
+      max-height:92vh;
+      padding:0;
+      color:var(--ink);
+      border:0;
+      border-radius:28px;
+      background:#fff;
+      box-shadow:0 36px 90px rgba(0,0,0,.34);
+    }
+    dialog::backdrop{
+      background:rgba(5,10,24,.74);
+      backdrop-filter:blur(8px);
+    }
+    .modal-head{
+      padding:24px 26px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 100% 0%,rgba(255,200,61,.22),transparent 38%),
+        linear-gradient(135deg,var(--navy),var(--blue));
+    }
+    .modal-head small{
+      display:block;
+      color:var(--gold);
+      font-size:.71rem;
+      font-weight:1000;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .modal-head h3{
+      margin-top:5px;
+      font-size:1.75rem;
+      letter-spacing:-.04em;
+    }
+    .modal-body{
+      max-height:65vh;
+      overflow-y:auto;
+      padding:25px;
+    }
+    .modal-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:13px;
+    }
+    .modal-grid label{
+      display:grid;
+      gap:7px;
+      color:#33415f;
+      font-size:.82rem;
+      font-weight:900;
+    }
+    .modal-grid input,.modal-grid select,.modal-grid textarea{
+      width:100%;
+      min-height:50px;
+      padding:0 13px;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:15px;
+      outline:none;
+      background:#f7f9ff;
+    }
+    .modal-grid textarea{
+      min-height:95px;
+      padding-top:13px;
+      resize:vertical;
+    }
+    .modal-grid input:focus,.modal-grid select:focus,.modal-grid textarea:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(13,90,215,.10);
+      background:#fff;
+    }
+    .modal-wide{grid-column:1/-1}
+    .modal-summary{
+      margin-bottom:18px;
+      padding:15px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:#f7f9ff;
+      color:#44516d;
+      line-height:1.6;
+      font-size:.86rem;
+    }
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:9px;
+      padding:18px 25px;
+      border-top:1px solid var(--line);
+      background:#f8faff;
+    }
+    .modal-button{
+      min-height:46px;
+      padding:0 18px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--navy);
+      background:#fff;
+      font-weight:1000;
+    }
+    .modal-primary{
+      color:#fff;
+      border:0;
+      background:linear-gradient(135deg,var(--red),var(--red-2));
+    }
+    .modal-success{
+      color:#fff;
+      border:0;
+      background:var(--green);
+    }
+    .modal-button:disabled{opacity:.55;cursor:not-allowed}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      z-index:400;
+      max-width:min(520px,calc(100% - 30px));
+      padding:13px 18px;
+      opacity:0;
+      color:#fff;
+      border-radius:999px;
+      background:var(--navy);
+      box-shadow:0 18px 40px rgba(6,20,55,.22);
+      transform:translate(-50%,24px);
+      transition:.3s ease;
+      font-weight:900;
+      text-align:center;
+      pointer-events:none;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%,0);
+    }
+
+    @media(max-width:1120px){
+      .login-grid{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .toolbar{grid-template-columns:repeat(2,1fr)}
+      .toolbar-buttons{grid-column:1/-1}
+    }
+    @media(max-width:760px){
+      .nav-inner{min-height:72px}
+      .nav-link{display:none}
+      .brand-text span{display:none}
+      .login-section{padding-top:42px}
+      .login-points{grid-template-columns:1fr}
+      .dashboard-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .toolbar{grid-template-columns:1fr}
+      .toolbar-buttons{grid-column:auto}
+      .modal-grid{grid-template-columns:1fr}
+      .modal-wide{grid-column:auto}
+      .footer-row{
+        flex-direction:column;
+        text-align:center;
+      }
+    }
+    @media(max-width:500px){
+      .wrap{width:min(var(--max),calc(100% - 24px))}
+      .brand-logo{width:52px;height:52px}
+      .brand-text b{font-size:.88rem}
+      .login-copy h1{font-size:3rem}
+      .login-card{padding:23px;border-radius:27px}
+      .stats-grid{grid-template-columns:1fr}
+      .dashboard-section{padding-top:32px}
+      .toolbar-buttons{flex-direction:column}
+      .toolbar-button{width:100%}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation:none!important;
+        transition:none!important;
+        scroll-behavior:auto!important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" id="progress"></div>
+
+  <div class="top-alert">
+    Private owner area - <span>booking requests, payments and court confirmation</span>
+  </div>
+
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="./index.html">
+        <img class="brand-logo" src="./assets/cba-logo.png" alt="Chaitanya Badminton Academy logo" />
+        <span class="brand-text">
+          <b>Chaitanya Badminton</b>
+          <span>Owner Dashboard</span>
+        </span>
+      </a>
+
+      <div class="nav-actions">
+        <a class="nav-link" href="./booking.html">Customer Booking</a>
+        <a class="nav-link" href="./index.html">Website Home</a>
+        <button class="logout-button hidden" id="logoutButton" type="button">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="login-section" id="loginSection">
+      <div class="wrap login-grid">
+        <div class="login-copy">
+          <div class="badge"><i>●</i> Protected academy control panel</div>
+          <h1>Owner <span class="red-word">dashboard</span></h1>
+          <p>
+            Review every customer request, contact the player, record payment,
+            confirm or reject the booking, and automatically lock confirmed court slots.
+          </p>
+
+          <div class="login-points">
+            <div class="login-point">
+              <b>Live</b>
+              <span>New Firebase booking requests appear automatically.</span>
+            </div>
+            <div class="login-point">
+              <b>Safe</b>
+              <span>Only the configured Firebase owner account can read data.</span>
+            </div>
+            <div class="login-point">
+              <b>Fast</b>
+              <span>Confirm, reject, call or WhatsApp from one dashboard.</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="login-card">
+          <div class="lock-icon">🔒</div>
+          <small>Owner access only</small>
+          <h2>Enter dashboard password</h2>
+          <p>The email login ID remains hidden. Enter the configured owner password.</p>
+
+          <div class="message" id="loginMessage"></div>
+
+          <form id="loginForm">
+            <label class="password-label">
+              Password
+              <span class="password-wrap">
+                <input id="adminPassword" type="password"
+                  autocomplete="current-password"
+                  placeholder="Enter owner password" required />
+                <button class="show-password" id="showPassword" type="button"
+                  aria-label="Show password">👁</button>
+              </span>
+            </label>
+
+            <button class="login-button" id="loginButton" type="submit">
+              Open Dashboard
+            </button>
+          </form>
+
+          <div class="login-note">
+            Owner access is protected through Firebase Authentication.
+            Keep the owner password private and change it periodically.
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="dashboard-section hidden" id="dashboardSection">
+      <div class="wrap">
+        <div class="dashboard-head">
+          <div>
+            <div class="kicker">Academy Operations</div>
+            <h1>Booking requests</h1>
+            <div class="live-pill">Live Firebase connection</div>
+          </div>
+          <p>
+            Confirm a request only after checking the customer and payment.
+            A confirmed court, date and time becomes unavailable on the customer page.
+          </p>
+        </div>
+
+        <div class="message" id="dashboardMessage"></div>
+
+        <div class="stats-grid">
+          <article class="stat-card stat-pending">
+            <span>Pending requests</span>
+            <strong id="pendingCount">0</strong>
+            <small>Waiting for owner action</small>
+          </article>
+
+          <article class="stat-card stat-confirmed">
+            <span>Confirmed</span>
+            <strong id="confirmedCount">0</strong>
+            <small>Successfully reserved</small>
+          </article>
+
+          <article class="stat-card stat-rejected">
+            <span>Rejected / cancelled</span>
+            <strong id="closedCount">0</strong>
+            <small>Not active anymore</small>
+          </article>
+
+          <article class="stat-card stat-revenue">
+            <span>Recorded revenue</span>
+            <strong id="revenueTotal">₹0</strong>
+            <small>Confirmed payment total</small>
+          </article>
+        </div>
+
+        <section class="toolbar-card">
+          <div class="toolbar">
+            <label>
+              Search customer
+              <input id="searchInput" type="search"
+                placeholder="Name, mobile, reference or court" />
+            </label>
+
+            <label>
+              Status
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="rejected">Rejected</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </label>
+
+            <label>
+              Court
+              <select id="courtFilter">
+                <option value="all">All courts</option>
+                <option value="court-1">Court 1</option>
+                <option value="court-2">Court 2</option>
+                <option value="court-3">Court 3</option>
+                <option value="court-4">Court 4</option>
+                <option value="court-5">Court 5</option>
+                <option value="court-6">Court 6</option>
+              </select>
+            </label>
+
+            <label>
+              Booking date
+              <input id="dateFilter" type="date" />
+            </label>
+
+            <div class="toolbar-buttons">
+              <button class="toolbar-button" id="todayFilterButton" type="button">Today</button>
+              <button class="toolbar-button" id="clearFiltersButton" type="button">Clear</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-head">
+            <div>
+              <h2>Customer requests</h2>
+              <span id="resultCount">0 requests displayed</span>
+            </div>
+            <span>Updates automatically</span>
+          </div>
+
+          <div id="tableContent">
+            <div class="empty-state">
+              <div class="empty-state-icon">⌛</div>
+              <h3>Loading requests</h3>
+              <p>Please wait while the dashboard connects to Firebase.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-brand">
+        <img src="./assets/cba-logo.png" alt="Chaitanya Badminton Academy logo" />
+        <div>
+          <b>Chaitanya Badminton Academy</b>
+          <p>Private owner booking administration</p>
+        </div>
+      </div>
+      <p>© <span id="currentYear"></span> Chaitanya Badminton Academy</p>
+    </div>
+  </footer>
+
+  <dialog id="paymentDialog">
+    <div class="modal-head">
+      <small>Confirm booking</small>
+      <h3>Record payment</h3>
+    </div>
+
+    <form id="paymentForm">
+      <div class="modal-body">
+        <div class="modal-summary" id="paymentBookingSummary"></div>
+        <div class="message" id="paymentMessage"></div>
+
+        <div class="modal-grid">
+          <label>
+            Requested amount
+            <input id="requestedAmount" type="number" readonly />
+          </label>
+
+          <label>
+            Amount received
+            <input id="amountPaid" type="number" min="1" step="1" required />
+          </label>
+
+          <label>
+            Payment method
+            <select id="paymentMethod" required>
+              <option value="upi">UPI</option>
+              <option value="cash">Cash</option>
+              <option value="bank-transfer">Bank transfer</option>
+              <option value="card">Card</option>
+            </select>
+          </label>
+
+          <label>
+            Transaction reference
+            <input id="transactionReference" type="text"
+              maxlength="100" placeholder="Optional for cash" />
+          </label>
+
+          <label class="modal-wide">
+            Admin notes
+            <textarea id="paymentNotes" maxlength="300"
+              placeholder="Any discount, balance or booking note"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-button" id="closePaymentDialog" type="button">Cancel</button>
+        <button class="modal-button modal-success" id="confirmPaymentButton" type="submit">
+          Confirm Booking
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="rejectDialog">
+    <div class="modal-head">
+      <small>Reject request</small>
+      <h3>Provide a reason</h3>
+    </div>
+
+    <form id="rejectForm">
+      <div class="modal-body">
+        <div class="modal-summary" id="rejectBookingSummary"></div>
+        <div class="message" id="rejectMessage"></div>
+
+        <div class="modal-grid">
+          <label class="modal-wide">
+            Rejection reason
+            <select id="rejectionReason">
+              <option value="Slot unavailable">Slot unavailable</option>
+              <option value="Payment not received">Payment not received</option>
+              <option value="Customer cancelled">Customer cancelled</option>
+              <option value="Academy closed">Academy closed</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label class="modal-wide">
+            Additional note
+            <textarea id="rejectionNote" maxlength="300"
+              placeholder="Optional explanation"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-button" id="closeRejectDialog" type="button">Cancel</button>
+        <button class="modal-button modal-primary" id="confirmRejectButton" type="submit">
+          Reject Request
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    /*
+      =============================================================
+      BEGINNER FIREBASE SETUP AREA
+      =============================================================
+
+      Use the SAME Firebase configuration as booking.html.
+
+      Firebase Authentication is configured for the academy owner.
+      The login page asks only for the Firebase account password.
+    */
+
+const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyBrok3rqR3FLA-0e8_y2QQF7T8cJs9VULY",
+      authDomain: "chaitanya-badminton-booking.firebaseapp.com",
+      projectId: "chaitanya-badminton-booking",
+      storageBucket: "chaitanya-badminton-booking.firebasestorage.app",
+      messagingSenderId: "315795938527",
+      appId: "1:315795938527:web:f3499aa42c99bb210a5d6a"
+    };
+
+    const ADMIN_EMAIL = "owner@chaitanya-admin.com";
+    const ADMIN_UID = "gQYVjRsAdwf1IjgweK9jr2zqBLT2";
+    const CURRENCY = "₹";
+    const INACTIVITY_LOGOUT_MINUTES = 30;
+
+    /*
+      =============================================================
+      END BEGINNER FIREBASE SETUP AREA
+      =============================================================
+    */
+
+    const firebaseConfigured =
+      !Object.values(FIREBASE_CONFIG).some(value => String(value).includes("PASTE_"))
+      && !ADMIN_UID.includes("PASTE_");
+
+    const state = {
+      firebase:null,
+      bookings:[],
+      selectedBooking:null,
+      unsubscribe:null,
+      inactivityTimer:null
+    };
+
+    const el = {
+      progress:document.getElementById("progress"),
+      loginSection:document.getElementById("loginSection"),
+      dashboardSection:document.getElementById("dashboardSection"),
+      logoutButton:document.getElementById("logoutButton"),
+      loginForm:document.getElementById("loginForm"),
+      adminPassword:document.getElementById("adminPassword"),
+      showPassword:document.getElementById("showPassword"),
+      loginButton:document.getElementById("loginButton"),
+      loginMessage:document.getElementById("loginMessage"),
+      dashboardMessage:document.getElementById("dashboardMessage"),
+      pendingCount:document.getElementById("pendingCount"),
+      confirmedCount:document.getElementById("confirmedCount"),
+      closedCount:document.getElementById("closedCount"),
+      revenueTotal:document.getElementById("revenueTotal"),
+      searchInput:document.getElementById("searchInput"),
+      statusFilter:document.getElementById("statusFilter"),
+      courtFilter:document.getElementById("courtFilter"),
+      dateFilter:document.getElementById("dateFilter"),
+      todayFilterButton:document.getElementById("todayFilterButton"),
+      clearFiltersButton:document.getElementById("clearFiltersButton"),
+      resultCount:document.getElementById("resultCount"),
+      tableContent:document.getElementById("tableContent"),
+      paymentDialog:document.getElementById("paymentDialog"),
+      paymentForm:document.getElementById("paymentForm"),
+      paymentBookingSummary:document.getElementById("paymentBookingSummary"),
+      paymentMessage:document.getElementById("paymentMessage"),
+      requestedAmount:document.getElementById("requestedAmount"),
+      amountPaid:document.getElementById("amountPaid"),
+      paymentMethod:document.getElementById("paymentMethod"),
+      transactionReference:document.getElementById("transactionReference"),
+      paymentNotes:document.getElementById("paymentNotes"),
+      closePaymentDialog:document.getElementById("closePaymentDialog"),
+      confirmPaymentButton:document.getElementById("confirmPaymentButton"),
+      rejectDialog:document.getElementById("rejectDialog"),
+      rejectForm:document.getElementById("rejectForm"),
+      rejectBookingSummary:document.getElementById("rejectBookingSummary"),
+      rejectMessage:document.getElementById("rejectMessage"),
+      rejectionReason:document.getElementById("rejectionReason"),
+      rejectionNote:document.getElementById("rejectionNote"),
+      closeRejectDialog:document.getElementById("closeRejectDialog"),
+      confirmRejectButton:document.getElementById("confirmRejectButton"),
+      toast:document.getElementById("toast")
+    };
+
+    function showMessage(node,text,type="error"){
+      node.textContent=text;
+      node.className=`message visible ${type}`;
+    }
+
+    function clearMessage(node){
+      node.textContent="";
+      node.className="message";
+    }
+
+    function showToast(text){
+      el.toast.textContent=text;
+      el.toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer=window.setTimeout(()=>el.toast.classList.remove("show"),3200);
+    }
+
+    function escapeHtml(value=""){
+      return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function localDateString(date=new Date()){
+      return [
+        date.getFullYear(),
+        String(date.getMonth()+1).padStart(2,"0"),
+        String(date.getDate()).padStart(2,"0")
+      ].join("-");
+    }
+
+    function displayDate(dateString){
+      if(!dateString)return "—";
+      return new Date(`${dateString}T00:00:00`).toLocaleDateString("en-IN",{
+        weekday:"short",day:"numeric",month:"short",year:"numeric"
+      });
+    }
+
+    function displayTime(time24){
+      if(!time24)return "—";
+      const [hourText,minute]=time24.split(":");
+      const hour=Number(hourText);
+      return `${hour%12||12}:${minute} ${hour>=12?"PM":"AM"}`;
+    }
+
+    function displayCreatedAt(value){
+      if(value?.toDate){
+        return value.toDate().toLocaleString("en-IN",{
+          day:"numeric",month:"short",year:"numeric",
+          hour:"numeric",minute:"2-digit"
+        });
+      }
+      return "Just now";
+    }
+
+    function bookingReference(id){
+      return `CBA-${id.slice(0,8).toUpperCase()}`;
+    }
+
+    function statusLabel(status){
+      const labels={
+        pending:"Pending",
+        confirmed:"Confirmed",
+        rejected:"Rejected",
+        cancelled:"Cancelled"
+      };
+      return labels[status]||status||"Unknown";
+    }
+
+    function paymentLabel(status){
+      const labels={
+        unpaid:"Unpaid",
+        paid:"Paid",
+        "partially-paid":"Partially paid",
+        refunded:"Refunded"
+      };
+      return labels[status]||status||"Unpaid";
+    }
+
+    function setLoggedIn(loggedIn){
+      el.loginSection.classList.toggle("hidden",loggedIn);
+      el.dashboardSection.classList.toggle("hidden",!loggedIn);
+      el.logoutButton.classList.toggle("hidden",!loggedIn);
+    }
+
+    async function initialiseFirebase(){
+      if(state.firebase)return;
+
+      if(!firebaseConfigured){
+        throw new Error(
+          "Firebase is not configured. Paste the Firebase values and admin UID in admin.html first."
+        );
+      }
+
+      const [appApi,authApi,firestoreApi]=await Promise.all([
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js")
+      ]);
+
+      const app=appApi.initializeApp(FIREBASE_CONFIG);
+      const auth=authApi.getAuth(app);
+      const db=firestoreApi.getFirestore(app);
+
+      await authApi.setPersistence(auth,authApi.browserSessionPersistence);
+
+      state.firebase={app,auth,db,authApi,firestoreApi};
+    }
+
+    async function handleLogin(event){
+      event.preventDefault();
+      clearMessage(el.loginMessage);
+
+      const password=el.adminPassword.value;
+      if(!password){
+        showMessage(el.loginMessage,"Enter the owner password.","warning");
+        return;
+      }
+
+      el.loginButton.disabled=true;
+      el.loginButton.textContent="Checking password…";
+
+      try{
+        await initialiseFirebase();
+        const {signInWithEmailAndPassword,signOut}=state.firebase.authApi;
+
+        const credential=await signInWithEmailAndPassword(
+          state.firebase.auth,
+          ADMIN_EMAIL,
+          password
+        );
+
+        if(credential.user.uid!==ADMIN_UID){
+          await signOut(state.firebase.auth);
+          throw new Error("This Firebase account is not configured as the academy owner.");
+        }
+
+        el.adminPassword.value="";
+      }catch(error){
+        console.error(error);
+        showMessage(el.loginMessage,friendlyAuthError(error));
+      }finally{
+        el.loginButton.disabled=false;
+        el.loginButton.textContent="Open Dashboard";
+      }
+    }
+
+    function friendlyAuthError(error){
+      const code=error?.code||"";
+      if(code.includes("invalid-credential")||code.includes("wrong-password")){
+        return "Incorrect password.";
+      }
+      if(code.includes("too-many-requests")){
+        return "Too many failed attempts. Wait a little and try again.";
+      }
+      if(code.includes("operation-not-allowed")){
+        return "Enable Email/Password sign-in in Firebase Authentication.";
+      }
+      if(code.includes("unauthorized-domain")){
+        return "Add notguddu034-afk.github.io to Firebase Authorized domains.";
+      }
+      return error?.message||"Login failed.";
+    }
+
+    function startRealtimeBookings(){
+      if(state.unsubscribe){
+        state.unsubscribe();
+      }
+
+      const {collection,onSnapshot,orderBy,query}=state.firebase.firestoreApi;
+      const bookingsQuery=query(
+        collection(state.firebase.db,"bookings"),
+        orderBy("createdAt","desc")
+      );
+
+      state.unsubscribe=onSnapshot(
+        bookingsQuery,
+        snapshot=>{
+          state.bookings=snapshot.docs.map(documentSnapshot=>({
+            id:documentSnapshot.id,
+            ...documentSnapshot.data()
+          }));
+          clearMessage(el.dashboardMessage);
+          updateStats();
+          renderBookings();
+        },
+        error=>{
+          console.error(error);
+          showMessage(
+            el.dashboardMessage,
+            error.code==="permission-denied"
+              ?"Permission denied. Check that the same ADMIN_UID is present in admin.html and Firestore rules."
+              :`Could not receive booking requests: ${error.message}`
+          );
+        }
+      );
+    }
+
+    function updateStats(){
+      const pending=state.bookings.filter(item=>item.status==="pending").length;
+      const confirmed=state.bookings.filter(item=>item.status==="confirmed");
+      const closed=state.bookings.filter(
+        item=>item.status==="rejected"||item.status==="cancelled"
+      ).length;
+      const revenue=confirmed.reduce(
+        (total,item)=>total+Number(item.amountPaid||0),0
+      );
+
+      el.pendingCount.textContent=String(pending);
+      el.confirmedCount.textContent=String(confirmed.length);
+      el.closedCount.textContent=String(closed);
+      el.revenueTotal.textContent=`${CURRENCY}${revenue.toLocaleString("en-IN")}`;
+    }
+
+    function filteredBookings(){
+      const search=el.searchInput.value.trim().toLowerCase();
+      const status=el.statusFilter.value;
+      const court=el.courtFilter.value;
+      const date=el.dateFilter.value;
+
+      return state.bookings.filter(item=>{
+        const searchable=[
+          item.customerName,
+          item.customerPhone,
+          item.courtName,
+          bookingReference(item.id),
+          item.transactionReference
+        ].join(" ").toLowerCase();
+
+        return (!search||searchable.includes(search))
+          && (status==="all"||item.status===status)
+          && (court==="all"||item.courtId===court)
+          && (!date||item.date===date);
+      });
+    }
+
+    function renderBookings(){
+      const bookings=filteredBookings();
+      el.resultCount.textContent=
+        `${bookings.length} request${bookings.length===1?"":"s"} displayed`;
+
+      if(bookings.length===0){
+        el.tableContent.innerHTML=`
+          <div class="empty-state">
+            <div class="empty-state-icon">🏸</div>
+            <h3>No matching booking requests</h3>
+            <p>New customer requests will appear here automatically, or clear the filters to see all records.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const rows=bookings.map(item=>{
+        const phone=String(item.customerPhone||"").replace(/\D/g,"");
+        const whatsappText=encodeURIComponent(
+          `Hello ${item.customerName||""}, regarding your Chaitanya Badminton Academy booking request ${bookingReference(item.id)} for ${item.courtName||""} on ${displayDate(item.date)} at ${displayTime(item.startTime)}.`
+        );
+
+        const actions=[];
+
+        if(item.status==="pending"){
+          actions.push(`
+            <button class="action-button action-confirm"
+              data-action="confirm" data-id="${item.id}">Confirm & Pay</button>
+          `);
+          actions.push(`
+            <button class="action-button action-reject"
+              data-action="reject" data-id="${item.id}">Reject</button>
+          `);
+        }
+
+        if(item.status==="confirmed"){
+          actions.push(`
+            <button class="action-button action-cancel"
+              data-action="cancel" data-id="${item.id}">Cancel & Reopen</button>
+          `);
+        }
+
+        actions.push(`
+          <a class="action-button action-call"
+            href="tel:+91${phone}">Call</a>
+        `);
+        actions.push(`
+          <a class="action-button action-whatsapp"
+            target="_blank" rel="noopener"
+            href="https://wa.me/91${phone}?text=${whatsappText}">WhatsApp</a>
+        `);
+
+        const notes=item.customerNotes
+          ?`<span class="subtext">Note: ${escapeHtml(item.customerNotes)}</span>`
+          :"";
+
+        const paymentDetails=item.status==="confirmed"
+          ?`
+            <strong>${CURRENCY}${Number(item.amountPaid||0).toLocaleString("en-IN")}</strong>
+            <span class="subtext">${escapeHtml(item.paymentMethod||"")} ${item.transactionReference?`· ${escapeHtml(item.transactionReference)}`:""}</span>
+          `
+          :`
+            <strong>${CURRENCY}${Number(item.requestedAmount||0).toLocaleString("en-IN")}</strong>
+            <span class="subtext">Requested amount</span>
+          `;
+
+        return `
+          <tr>
+            <td>
+              <span class="customer-name">${escapeHtml(item.customerName||"Unknown")}</span>
+              <span class="subtext">+91 ${escapeHtml(item.customerPhone||"—")}</span>
+              <span class="subtext">${Number(item.playerCount||0)} player${Number(item.playerCount||0)===1?"":"s"}</span>
+              ${notes}
+              <span class="reference">${bookingReference(item.id)}</span>
+            </td>
+
+            <td>
+              <span class="customer-name">${escapeHtml(item.courtName||item.courtId||"—")}</span>
+              <span class="subtext">${displayDate(item.date)}</span>
+              <span class="subtext">${displayTime(item.startTime)} – ${displayTime(item.endTime)}</span>
+            </td>
+
+            <td>
+              ${paymentDetails}
+              <span class="subtext">Preference: ${escapeHtml(item.paymentPreference||"—")}</span>
+            </td>
+
+            <td>
+              <span class="status-badge status-${escapeHtml(item.status||"pending")}">
+                ${escapeHtml(statusLabel(item.status))}
+              </span>
+              <span class="payment-badge">${escapeHtml(paymentLabel(item.paymentStatus))}</span>
+              ${item.rejectionReason?`<span class="subtext">${escapeHtml(item.rejectionReason)}</span>`:""}
+            </td>
+
+            <td>
+              <span class="customer-name">${displayCreatedAt(item.createdAt)}</span>
+              ${item.confirmedAt?`<span class="subtext">Confirmed: ${displayCreatedAt(item.confirmedAt)}</span>`:""}
+            </td>
+
+            <td>
+              <div class="action-buttons">${actions.join("")}</div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      el.tableContent.innerHTML=`
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Court & schedule</th>
+                <th>Amount & payment</th>
+                <th>Status</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openPaymentDialog(booking){
+      state.selectedBooking=booking;
+      clearMessage(el.paymentMessage);
+
+      el.paymentBookingSummary.innerHTML=`
+        <b>${escapeHtml(booking.customerName)}</b><br>
+        ${escapeHtml(booking.courtName)} · ${displayDate(booking.date)} ·
+        ${displayTime(booking.startTime)} – ${displayTime(booking.endTime)}<br>
+        Reference: ${bookingReference(booking.id)}
+      `;
+
+      el.requestedAmount.value=Number(booking.requestedAmount||0);
+      el.amountPaid.value=Number(booking.requestedAmount||0);
+      el.paymentMethod.value=booking.paymentPreference==="cash"?"cash":"upi";
+      el.transactionReference.value="";
+      el.paymentNotes.value="";
+
+      el.paymentDialog.showModal();
+    }
+
+    async function confirmBooking(event){
+      event.preventDefault();
+      clearMessage(el.paymentMessage);
+
+      const booking=state.selectedBooking;
+      if(!booking)return;
+
+      const amount=Number(el.amountPaid.value);
+      if(!Number.isFinite(amount)||amount<=0){
+        showMessage(el.paymentMessage,"Enter a valid payment amount.","warning");
+        return;
+      }
+
+      el.confirmPaymentButton.disabled=true;
+      el.confirmPaymentButton.textContent="Confirming…";
+
+      const bookingRef=state.firebase.firestoreApi.doc(
+        state.firebase.db,"bookings",booking.id
+      );
+      const slotRef=state.firebase.firestoreApi.doc(
+        state.firebase.db,"confirmedSlots",booking.slotKey
+      );
+
+      try{
+        const {
+          runTransaction,
+          serverTimestamp,
+          writeBatch,
+          doc
+        }=state.firebase.firestoreApi;
+
+        await runTransaction(state.firebase.db,async transaction=>{
+          const bookingSnapshot=await transaction.get(bookingRef);
+          const slotSnapshot=await transaction.get(slotRef);
+
+          if(!bookingSnapshot.exists()){
+            throw new Error("This booking request no longer exists.");
+          }
+
+          const currentBooking=bookingSnapshot.data();
+
+          if(currentBooking.status!=="pending"){
+            throw new Error("Only a pending request can be confirmed.");
+          }
+
+          if(slotSnapshot.exists()){
+            throw new Error(
+              "This court and time is already confirmed for another customer."
+            );
+          }
+
+          const paymentStatus=
+            amount>=Number(currentBooking.requestedAmount||0)
+              ?"paid"
+              :"partially-paid";
+
+          transaction.set(slotRef,{
+            bookingId:booking.id,
+            customerName:currentBooking.customerName,
+            courtId:currentBooking.courtId,
+            courtName:currentBooking.courtName,
+            date:currentBooking.date,
+            startTime:currentBooking.startTime,
+            endTime:currentBooking.endTime,
+            status:"booked",
+            amountPaid:amount,
+            createdAt:serverTimestamp(),
+            updatedAt:serverTimestamp()
+          });
+
+          transaction.update(bookingRef,{
+            status:"confirmed",
+            paymentStatus,
+            amountPaid:amount,
+            paymentMethod:el.paymentMethod.value,
+            transactionReference:el.transactionReference.value.trim(),
+            adminNotes:el.paymentNotes.value.trim(),
+            confirmedAt:serverTimestamp(),
+            rejectedAt:null,
+            rejectionReason:null
+          });
+        });
+
+        // Automatically reject any other pending request already visible
+        // for the exact same court/date/time.
+        const competing=state.bookings.filter(item=>
+          item.id!==booking.id
+          && item.slotKey===booking.slotKey
+          && item.status==="pending"
+        );
+
+        if(competing.length){
+          const batch=writeBatch(state.firebase.db);
+          competing.forEach(item=>{
+            batch.update(doc(state.firebase.db,"bookings",item.id),{
+              status:"rejected",
+              rejectionReason:"Slot confirmed for another customer",
+              rejectionNote:"Automatically rejected by the system.",
+              rejectedAt:serverTimestamp()
+            });
+          });
+          await batch.commit();
+        }
+
+        el.paymentDialog.close();
+        showToast("Payment recorded and booking confirmed.");
+      }catch(error){
+        console.error(error);
+        showMessage(el.paymentMessage,error.message||"Could not confirm booking.");
+      }finally{
+        el.confirmPaymentButton.disabled=false;
+        el.confirmPaymentButton.textContent="Confirm Booking";
+      }
+    }
+
+    function openRejectDialog(booking){
+      state.selectedBooking=booking;
+      clearMessage(el.rejectMessage);
+
+      el.rejectBookingSummary.innerHTML=`
+        <b>${escapeHtml(booking.customerName)}</b><br>
+        ${escapeHtml(booking.courtName)} · ${displayDate(booking.date)} ·
+        ${displayTime(booking.startTime)} – ${displayTime(booking.endTime)}<br>
+        Reference: ${bookingReference(booking.id)}
+      `;
+
+      el.rejectionReason.value="Slot unavailable";
+      el.rejectionNote.value="";
+      el.rejectDialog.showModal();
+    }
+
+    async function rejectBooking(event){
+      event.preventDefault();
+      clearMessage(el.rejectMessage);
+
+      const booking=state.selectedBooking;
+      if(!booking)return;
+
+      el.confirmRejectButton.disabled=true;
+      el.confirmRejectButton.textContent="Rejecting…";
+
+      try{
+        const {doc,serverTimestamp,updateDoc}=state.firebase.firestoreApi;
+        await updateDoc(doc(state.firebase.db,"bookings",booking.id),{
+          status:"rejected",
+          rejectionReason:el.rejectionReason.value,
+          rejectionNote:el.rejectionNote.value.trim(),
+          rejectedAt:serverTimestamp()
+        });
+
+        el.rejectDialog.close();
+        showToast("Booking request rejected.");
+      }catch(error){
+        console.error(error);
+        showMessage(el.rejectMessage,error.message||"Could not reject request.");
+      }finally{
+        el.confirmRejectButton.disabled=false;
+        el.confirmRejectButton.textContent="Reject Request";
+      }
+    }
+
+    async function cancelConfirmedBooking(booking){
+      const approved=window.confirm(
+        `Cancel ${booking.customerName}'s confirmed booking and reopen ${booking.courtName} at ${displayTime(booking.startTime)}?`
+      );
+      if(!approved)return;
+
+      const {doc,runTransaction,serverTimestamp}=state.firebase.firestoreApi;
+      const bookingRef=doc(state.firebase.db,"bookings",booking.id);
+      const slotRef=doc(state.firebase.db,"confirmedSlots",booking.slotKey);
+
+      try{
+        await runTransaction(state.firebase.db,async transaction=>{
+          const bookingSnapshot=await transaction.get(bookingRef);
+          const slotSnapshot=await transaction.get(slotRef);
+
+          if(!bookingSnapshot.exists()){
+            throw new Error("The booking no longer exists.");
+          }
+
+          if(
+            slotSnapshot.exists()
+            && slotSnapshot.data().bookingId===booking.id
+          ){
+            transaction.delete(slotRef);
+          }
+
+          transaction.update(bookingRef,{
+            status:"cancelled",
+            cancelledAt:serverTimestamp()
+          });
+        });
+
+        showToast("Booking cancelled and slot reopened.");
+      }catch(error){
+        console.error(error);
+        showMessage(el.dashboardMessage,error.message||"Could not cancel booking.");
+      }
+    }
+
+    async function handleTableAction(event){
+      const actionElement=event.target.closest("[data-action]");
+      if(!actionElement)return;
+
+      const booking=state.bookings.find(item=>item.id===actionElement.dataset.id);
+      if(!booking)return;
+
+      if(actionElement.dataset.action==="confirm"){
+        openPaymentDialog(booking);
+      }
+      if(actionElement.dataset.action==="reject"){
+        openRejectDialog(booking);
+      }
+      if(actionElement.dataset.action==="cancel"){
+        await cancelConfirmedBooking(booking);
+      }
+    }
+
+    function resetInactivityTimer(){
+      if(!state.firebase?.auth.currentUser)return;
+
+      window.clearTimeout(state.inactivityTimer);
+      state.inactivityTimer=window.setTimeout(async()=>{
+        await state.firebase.authApi.signOut(state.firebase.auth);
+        showMessage(
+          el.loginMessage,
+          "You were logged out after 30 minutes of inactivity.",
+          "warning"
+        );
+      },INACTIVITY_LOGOUT_MINUTES*60*1000);
+    }
+
+    async function logout(){
+      if(!state.firebase)return;
+      await state.firebase.authApi.signOut(state.firebase.auth);
+    }
+
+    async function initialise(){
+      document.getElementById("currentYear").textContent=new Date().getFullYear();
+
+      if(!firebaseConfigured){
+        showMessage(
+          el.loginMessage,
+          "Before login, paste the same Firebase configuration used in booking.html and add the owner's UID.",
+          "warning"
+        );
+      }
+
+      try{
+        if(firebaseConfigured){
+          await initialiseFirebase();
+
+          state.firebase.authApi.onAuthStateChanged(
+            state.firebase.auth,
+            async user=>{
+              const validAdmin=user&&user.uid===ADMIN_UID;
+
+              if(user&&!validAdmin){
+                await state.firebase.authApi.signOut(state.firebase.auth);
+                showMessage(
+                  el.loginMessage,
+                  "Signed-in account is not the configured owner account."
+                );
+                return;
+              }
+
+              setLoggedIn(Boolean(validAdmin));
+
+              if(validAdmin){
+                clearMessage(el.loginMessage);
+                startRealtimeBookings();
+                resetInactivityTimer();
+              }else{
+                if(state.unsubscribe){
+                  state.unsubscribe();
+                  state.unsubscribe=null;
+                }
+                state.bookings=[];
+              }
+            }
+          );
+        }
+      }catch(error){
+        showMessage(el.loginMessage,error.message);
+      }
+    }
+
+    el.loginForm.addEventListener("submit",handleLogin);
+    el.logoutButton.addEventListener("click",logout);
+
+    el.showPassword.addEventListener("click",()=>{
+      const visible=el.adminPassword.type==="text";
+      el.adminPassword.type=visible?"password":"text";
+      el.showPassword.textContent=visible?"👁":"🙈";
+    });
+
+    el.searchInput.addEventListener("input",renderBookings);
+    el.statusFilter.addEventListener("change",renderBookings);
+    el.courtFilter.addEventListener("change",renderBookings);
+    el.dateFilter.addEventListener("change",renderBookings);
+
+    el.todayFilterButton.addEventListener("click",()=>{
+      el.dateFilter.value=localDateString();
+      renderBookings();
+    });
+
+    el.clearFiltersButton.addEventListener("click",()=>{
+      el.searchInput.value="";
+      el.statusFilter.value="all";
+      el.courtFilter.value="all";
+      el.dateFilter.value="";
+      renderBookings();
+    });
+
+    el.tableContent.addEventListener("click",handleTableAction);
+
+    el.paymentForm.addEventListener("submit",confirmBooking);
+    el.closePaymentDialog.addEventListener("click",()=>el.paymentDialog.close());
+
+    el.rejectForm.addEventListener("submit",rejectBooking);
+    el.closeRejectDialog.addEventListener("click",()=>el.rejectDialog.close());
+
+    ["click","keydown","mousemove","touchstart"].forEach(eventName=>{
+      document.addEventListener(eventName,resetInactivityTimer,{passive:true});
+    });
+
+    window.addEventListener("scroll",()=>{
+      const scrollable=document.documentElement.scrollHeight-window.innerHeight;
+      el.progress.style.width=`${scrollable>0?(window.scrollY/scrollable)*100:0}%`;
+    });
+
+    initialise();
+  </script>
+</body>
+</html>
